@@ -18,18 +18,14 @@ func GenerateJWT(userID uint, signingKey string, expiresIn time.Duration) (strin
 }
 
 // VerifyJWT is used to verify a jwt token, and return its claims
-func VerifyJWT(theToken string, signingKey string) (claims map[string]interface{}, err error) {
-	var token *jwt.Token
-
+func VerifyJWT(theToken string, signingKey string) (map[string]interface{}, error) {
 	// Try to parse key
-	token, err = jwt.Parse(theToken, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(theToken, func(token *jwt.Token) (interface{}, error) {
 		return []byte(signingKey), nil
 	})
-
-	// If parsed but invalid, return error
-	if err == nil && token.Valid {
+	// If token but invalid, return error
+	if err == nil && !token.Valid {
 		return nil, errors.New("Token is invalid")
 	}
-
-	return
+	return token.Claims.(jwt.MapClaims), nil
 }

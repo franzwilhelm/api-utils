@@ -8,7 +8,7 @@ import (
 )
 
 // GenerateJWT generates JWT token, based on roleID and userID
-func GenerateJWT(userID uint, signingKey string, expiresIn time.Duration) (string, error) {
+func GenerateJWT(userID interface{}, signingKey string, expiresIn time.Duration) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"iat": time.Now().Unix(),
 		"exp": time.Now().Add(expiresIn).Unix(),

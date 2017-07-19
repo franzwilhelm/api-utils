@@ -1,6 +1,7 @@
 package base
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/astaxie/beego"
@@ -36,22 +37,17 @@ func (c *ResponseController) Prepare() {
 	c.InputURL = c.Ctx.Input.URL()
 }
 
-// SetErrorText sets error based on code and string
-func (c *ResponseController) SetErrorText(code int, msg string) {
+// SendError sets error based on code and error interface
+func (c *ResponseController) SendError(code int, err ...interface{}) {
 	c.Code = code
-	c.Res.Message = msg
-	c.SetOutput()
+	if err != nil {
+		c.Res.Message = fmt.Sprintf("%s", err)
+	}
+	c.SendResponse()
 }
 
-// SetError sets error based on code and error interface
-func (c *ResponseController) SetError(code int, err error) {
-	c.Code = code
-	c.Res.Message = err.Error()
-	c.SetOutput()
-}
-
-// SetOutput sets JSON output formatted for web
-func (c *ResponseController) SetOutput() {
+// SendResponse sets JSON output formatted for web
+func (c *ResponseController) SendResponse() {
 	c.Res.Href = c.InputURL
 	c.Data["json"] = c.Res
 	c.Ctx.Output.SetStatus(c.Code)

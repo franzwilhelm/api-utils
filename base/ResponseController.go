@@ -37,20 +37,14 @@ func (c *ResponseController) Prepare() {
 	c.InputURL = c.Ctx.Input.URL()
 }
 
-// SendError sets error based on code and error interface
-func (c *ResponseController) SendError(code int, err ...interface{}) {
-	c.Code = code
-	if err != nil {
-		c.Res.Message = fmt.Sprintf("%s", err)
-	}
-	c.SendResponse()
-}
-
 // SendResponse sets JSON output formatted for web
-func (c *ResponseController) SendResponse() {
+func (c *ResponseController) SendResponse(code int, msg ...interface{}) {
+	if msg != nil {
+		c.Res.Message = fmt.Sprint(msg)
+	}
 	c.Res.Href = c.InputURL
 	c.Data["json"] = c.Res
-	c.Ctx.Output.SetStatus(c.Code)
+	c.Ctx.Output.SetStatus(code)
 	c.ServeJSON()
 	c.StopRun()
 }

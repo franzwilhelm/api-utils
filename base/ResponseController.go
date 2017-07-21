@@ -40,7 +40,7 @@ func (c *ResponseController) Prepare() {
 // SendResponse sets JSON output formatted for web
 func (c *ResponseController) SendResponse(code int, msg ...interface{}) {
 	if msg != nil {
-		c.Res.Message = fmt.Sprint(msg)
+		c.Res.Message = fmt.Sprint(msg[0])
 	}
 	c.Res.Href = c.InputURL
 	c.Data["json"] = c.Res

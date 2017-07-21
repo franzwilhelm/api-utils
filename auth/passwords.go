@@ -1,7 +1,10 @@
 package auth
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"math/rand"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -16,6 +19,18 @@ func GenerateRandomPassword(length int) string {
 		b[i] = letters[rand.Intn(len(letters))]
 	}
 	return string(b)
+}
+
+// GenerateConfirmHash generates a hash that can be used in for
+// example password confirm mails
+func GenerateConfirmHash() (string, error) {
+	rData := make([]byte, 128)
+	if _, err := rand.New(rand.NewSource(int64(time.Now().Nanosecond()))).Read(rData); err != nil {
+		return "", err
+	}
+	hash := md5.Sum(rData)
+
+	return hex.EncodeToString(hash[:]), nil
 }
 
 // EncryptPassword is used to encrypt a password using bcrypt

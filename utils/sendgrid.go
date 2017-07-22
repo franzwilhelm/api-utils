@@ -13,12 +13,13 @@ import (
 var SendgridAPIKey string
 
 // SendMail is used to send a mail  through the sendgrid API
-func SendMail(subject, message, toMail string) (*rest.Response, error) {
-	from := mail.NewEmail("Stempl.no", "noreply@stempl.no")
-	to := mail.NewEmail("Franz", toMail)
-
-	content := mail.NewContent("text/plain", message)
-	m := mail.NewV3MailInit(from, subject, to, content)
+func SendMail(fromName, fromEmail, subject, toName, toEmail, contentType, content string) (*rest.Response, error) {
+	m := mail.NewV3MailInit(
+		mail.NewEmail(fromName, fromEmail),
+		subject,
+		mail.NewEmail(toName, toEmail),
+		mail.NewContent(contentType, content),
+	)
 
 	request := sendgrid.GetRequest(SendgridAPIKey, "/v3/mail/send", "https://api.sendgrid.com")
 	request.Method = "POST"
